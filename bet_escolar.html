@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bet Escolar — Cassino de Mentirinha</title>
+<style>
+:root{--bg:#071b16;--panel:#10352a;--gold:#ffd166;--green:#19c37d;--text:#f4fff8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#14533d,#06130f 65%);color:var(--text);font-family:Arial,sans-serif;min-height:100vh}
+header{text-align:center;padding:24px 12px 12px}h1{margin:0;color:var(--gold);font-size:clamp(2rem,7vw,3.4rem);letter-spacing:2px}header p{margin:8px 0;color:#c8e7d8}
+main{max-width:850px;margin:auto;padding:12px}.notice{border:1px solid #c89a32;background:#2c2818;color:#ffe9a6;padding:12px;border-radius:12px;text-align:center;font-size:.92rem}
+.panel{margin-top:16px;background:linear-gradient(145deg,#164634,#0c2a20);border:1px solid #28704f;border-radius:18px;padding:20px;box-shadow:0 12px 30px #0005}
+.stats{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.stat{background:#071b16;padding:12px 16px;border-radius:12px;flex:1;text-align:center}.stat small{display:block;color:#b9d8c8}.stat strong{font-size:1.4rem;color:var(--gold)}
+h2{text-align:center;color:var(--gold)}.reels{display:flex;justify-content:center;gap:10px;margin:20px 0}.reel{display:grid;place-items:center;width:min(24vw,105px);height:min(27vw,112px);font-size:clamp(2.4rem,9vw,4.3rem);background:#fff8e8;color:#16241c;border:4px solid var(--gold);border-radius:14px;box-shadow:inset 0 -8px #d9cba8}
+.controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}button{border:0;border-radius:12px;padding:13px 18px;font-size:1rem;font-weight:bold;cursor:pointer}button:focus-visible{outline:3px solid white;outline-offset:3px}.primary{background:var(--gold);color:#332400}.secondary{background:#246a4e;color:white}.danger{background:#64322d;color:white}button:disabled{opacity:.5;cursor:not-allowed}
+.betrow{display:flex;justify-content:center;align-items:center;gap:12px;margin:16px 0}.betrow button{padding:8px 14px}.betrow span{min-width:110px;text-align:center;font-weight:bold}
+#message{text-align:center;min-height:28px;font-weight:bold;color:#d7ffe7}.rules{line-height:1.55;color:#d4e9dd}.rules li{margin:6px 0}footer{text-align:center;color:#9bbca9;padding:20px;font-size:.85rem}
+</style>
+</head>
+<body>
+<header><h1>BET ESCOLAR</h1><p>Gire os rolos, teste a sorte e aprenda sobre probabilidade!</p></header>
+<main>
+<div class="notice"><strong>Projeto escolar:</strong> jogo fictício, sem dinheiro real, sem depósitos e sem prêmios. Você começa com 1000 fichas virtuais.</div>
+<section class="panel">
+<div class="stats"><div class="stat"><small>Saldo virtual</small><strong id="balance">1000</strong></div><div class="stat"><small>Maior prêmio possível</small><strong>×10</strong></div><div class="stat"><small>Jogadas</small><strong id="plays">0</strong></div></div>
+<h2>🎰 Caça-níquel</h2>
+<div class="betrow"><button class="secondary" id="minus" aria-label="Diminuir aposta">−</button><span>Aposta: <b id="bet">50</b> fichas</span><button class="secondary" id="plus" aria-label="Aumentar aposta">+</button></div>
+<div class="reels" aria-label="Resultado do caça-níquel"><div class="reel" id="r1">🍒</div><div class="reel" id="r2">⭐</div><div class="reel" id="r3">🍋</div></div>
+<div class="controls"><button class="primary" id="spin">GIRAR 🎲</button><button class="secondary" id="reset">Recomeçar</button></div>
+<p id="message" role="status">Escolha uma aposta e clique em GIRAR!</p>
+</section>
+<section class="panel rules"><h2>Como funciona</h2><ul><li>Três símbolos iguais: recebe 10 vezes a aposta.</li><li>Dois símbolos iguais: recebe 2 vezes a aposta.</li><li>Nenhum par: perde a aposta virtual.</li><li>Quando as fichas acabarem, use “Recomeçar” para reiniciar a demonstração.</li></ul><p><strong>Nota para o trabalho:</strong> máquinas de cassino usam aleatoriedade e probabilidades; este exemplo simplificado é apenas educativo e não representa uma forma de ganhar dinheiro.</p></section>
+</main><footer>BET ESCOLAR • Demonstração educativa • 100% fictícia</footer>
+<script>
+const symbols=['🍒','🍋','🍇','⭐','🔔','💎'];let balance=1000,bet=50,plays=0;
+const $=id=>document.getElementById(id);
+function render(){$('balance').textContent=balance;$('bet').textContent=bet;$('plays').textContent=plays;$('minus').disabled=bet<=10;$('plus').disabled=bet>=Math.min(200,balance);$('spin').disabled=balance<bet;}
+$('minus').onclick=()=>{bet=Math.max(10,bet-10);render()};
+$('plus').onclick=()=>{bet=Math.min(200,balance,bet+10);render()};
+$('reset').onclick=()=>{balance=1000;bet=50;plays=0;['r1','r2','r3'].forEach((id,i)=>$(id).textContent=['🍒','⭐','🍋'][i]);$('message').textContent='Saldo reiniciado. Boa experiência!';render()};
+$('spin').onclick=()=>{if(balance<bet)return;const result=[0,1,2].map(()=>symbols[Math.floor(Math.random()*symbols.length)]);['r1','r2','r3'].forEach((id,i)=>$(id).textContent=result[i]);balance-=bet;plays++;let payout=0;if(result[0]===result[1]&&result[1]===result[2])payout=bet*10;else if(result[0]===result[1]||result[0]===result[2]||result[1]===result[2])payout=bet*2;balance+=payout;$('message').textContent=payout?`Você ganhou ${payout} fichas virtuais!`:'Não formou um par. Foi só uma simulação!';if(balance===0)$('message').textContent+=' Saldo zerado — recomece para continuar.';render()};
+render();
+</script>
+</body></html>
